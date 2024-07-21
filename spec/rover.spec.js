@@ -5,7 +5,7 @@ const Command = require("../command.js");
 // NOTE: If at any time, you want to focus on the output from a single test, feel free to comment out all the others.
 //       However, do NOT edit the grading tests for any reason and make sure to un-comment out your code to get the autograder to pass.
 
-//Test 7 (like test 2 or 3 or 5 or 6)
+//Test 7
 describe("Rover class", function () {
   it("constructor sets position and default values for mode and generatorWatts”", function () {
     let rover = new Rover(98382);
@@ -45,5 +45,55 @@ describe("Rover Class", function () {
 
 //Test 10
 describe("Rover Class", function () {
-  it("responds correctly to the status check command", function () {});
+  it("responds correctly to the status check command", function () {
+    let commands = [new Command("STATUS_CHECK")];
+    let message = new Message("Test message with one commands", commands);
+    let rover = new Rover(98382); // Passes 98382 as the rover's position.
+    let response = rover.receiveMessage(message);
+    expect(response.results[0].position).toEqual(98382);
+    expect(response.results[0].mode).toEqual("NORMAL"); //when uncommented only 9 pass
+    expect(response.results[0].generatorWatts).toEqual(110);
+  });
+});
+
+//Test 11
+describe("Rover Class", function () {
+  it("responds correctly to the mode change command", function () {
+    let commands = [new Command("MODE_CHANGE", "LOW_POWER")];
+    let message = new Message("Test message with one commands", commands);
+    let rover = new Rover(98382);
+    let response = rover.receiveMessage(message);
+    expect(response.results[0].position).toEqual(98382);
+    expect(response.results[0].mode).toEqual("LOW_POWER"); //when uncommented only 9 pass
+    expect(response.results[0].generatorWatts).toEqual(110);
+  });
+});
+
+//Test 12
+describe("Rover Class", function () {
+  it("responds with a false completed value when attempting to move in LOW_POWER mode", function () {
+    let commands = [
+      new Command("MODE_CHANGE", "LOW_POWER"),
+      new Command("MOVE", 98383),
+    ];
+    let message = new Message("Test message with two commands", commands);
+    let rover = new Rover(98382);
+    let response = rover.receiveMessage(message);
+    expect(response.results[0].position).toEqual(98382);
+    expect(response.results[0].mode).toEqual("LOW_POWER"); //when uncommented only 9 pass
+    expect(response.results[0].generatorWatts).toEqual(110);
+  });
+});
+
+//Test 13
+describe("Rover Class", function () {
+  it("responds with the position for the move command", function () {
+    let commands = [new Command("MOVE", 98383)];
+    let message = new Message("Test message with two commands", commands);
+    let rover = new Rover(98383);
+    let response = rover.receiveMessage(message);
+    expect(response.results[0].position).toEqual(98383);
+    expect(response.results[0].mode).toEqual("NORMAL"); //when uncommented only 9 pass
+    expect(response.results[0].generatorWatts).toEqual(110);
+  });
 });

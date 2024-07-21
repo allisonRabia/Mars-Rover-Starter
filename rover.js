@@ -5,20 +5,40 @@ class Rover {
     this.generatorWatts = 110;
   }
   receiveMessage(message) {
-    let response = { message: message.name, results: [] };
+    let response = {
+      message: message.name,
+      results: [],
+    };
+    for (let i = 0; i < message.commands.length; i++) {
+      if (message.commands[i].commandType === "STATUS_CHECK") {
+        let roverStatus = {
+          position: this.position,
+          mode: this.mode,
+          generatorWatts: this.generatorWatts,
+        };
+        response.results.push(roverStatus);
+      } else if (message.commands[i].commandType === "MODE_CHANGE") {
+        let roverStatus = {
+          position: this.position,
+          mode: message.commands[i].value,
+          generatorWatts: this.generatorWatts,
+        };
+        response.results.push(roverStatus);
+      } else if (
+        message.commands[i].commandType === "MOVE" &&
+        this.mode != "LOW_POWER"
+      ) {
+        let roverStatus = {
+          position: message.commands[i].value,
+          mode: this.mode,
+          generatorWatts: this.generatorWatts,
+        };
+        response.results.push(roverStatus);
+      }
+    }
 
     return response;
   }
 }
-
-// let commands = [
-//   new Command("MODE_CHANGE", "LOW_POWER"),
-//   new Command("STATUS_CHECK"),
-// ];
-// let message = new Message("Test message with two commands", commands);
-// let rover = new Rover(98382); // Passes 98382 as the rover's position.
-// let response = rover.receiveMessage(message);
-
-//console.log(response.name);
 
 module.exports = Rover;
