@@ -80,8 +80,9 @@ describe("Rover Class", function () {
     let rover = new Rover(98382);
     let response = rover.receiveMessage(message);
     expect(response.results[0].position).toEqual(98382);
-    expect(response.results[0].mode).toEqual("LOW_POWER"); //when uncommented only 9 pass
+    expect(response.results[0].mode).toEqual("LOW_POWER");
     expect(response.results[0].generatorWatts).toEqual(110);
+    expect(response.results[1]).toEqual(false);
   });
 });
 
@@ -90,10 +91,10 @@ describe("Rover Class", function () {
   it("responds with the position for the move command", function () {
     let commands = [new Command("MOVE", 98383)];
     let message = new Message("Test message with two commands", commands);
-    let rover = new Rover(98383);
+    let rover = new Rover(98382);
     let response = rover.receiveMessage(message);
     expect(response.results[0].position).toEqual(98383);
-    expect(response.results[0].mode).toEqual("NORMAL"); //when uncommented only 9 pass
+    expect(response.results[0].mode).toEqual("NORMAL");
     expect(response.results[0].generatorWatts).toEqual(110);
   });
 });

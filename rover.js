@@ -16,14 +16,27 @@ class Rover {
           mode: this.mode,
           generatorWatts: this.generatorWatts,
         };
-        response.results.push(roverStatus);
+        let completed = true;
+        response.results.push(roverStatus, completed);
       } else if (message.commands[i].commandType === "MODE_CHANGE") {
         let roverStatus = {
           position: this.position,
           mode: message.commands[i].value,
           generatorWatts: this.generatorWatts,
         };
-        response.results.push(roverStatus);
+        let completed = true;
+        response.results.push(roverStatus, completed);
+      } else if (
+        message.commands[i].commandType === "MOVE" &&
+        this.mode === "LOW_POWER"
+      ) {
+        let roverStatus = {
+          position: this.position,
+          mode: this.mode,
+          generatorWatts: this.generatorWatts,
+        };
+        let completed = false;
+        response.results.push(roverStatus, completed);
       } else if (
         message.commands[i].commandType === "MOVE" &&
         this.mode != "LOW_POWER"
@@ -33,10 +46,10 @@ class Rover {
           mode: this.mode,
           generatorWatts: this.generatorWatts,
         };
-        response.results.push(roverStatus);
+        let completed = true;
+        response.results.push(roverStatus, completed);
       }
     }
-
     return response;
   }
 }
